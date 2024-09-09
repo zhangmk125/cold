@@ -18,7 +18,7 @@ set.seed(100)
 data <- read.table("file.txt", sep = '\t',
                    header = TRUE, stringsAsFactors = FALSE,
                    na.strings = "",fill = TRUE) %>%
-  select(-gene,-nucleotide.Intron.length)
+  select(-gene)
 data$response <- factor(data$response, levels = c("1","0"),
                         labels = c("Good", "Bad"))
 data[is.na(data)] = 0
@@ -129,37 +129,5 @@ autoplot(bmr, type = "prc")+theme_bw()
 dev.off()
 
 
-#输出特征重要性分数
-#输出LMT特征
-filter_LMT = flt("importance",
-                 learner = lrn("classif.LMT", predict_type = "prob"))
-filter_LMT$calculate(tsk1)
-importance_LMT = as.data.table(filter_LMT, keep.rownames = TRUE)[1:10]
-colnames(importance_LMT) = c("Feature", "Importance")
-
-pdf('LMT_feature-importance.pdf',width = 4,height = 4)
-ggplot(data=importance_LMT,
-       aes(x = reorder(Feature, Importance), y = Importance)) +
-  geom_col() + coord_flip() + xlab("") +
-  ggtitle("LMT Feature") +
-  theme(plot.title = element_text(hjust = 0.5))
-importance_LMT
-dev.off()
-
-#输出特征重要性分数
-#输出SVM特征
-filter_svm = flt("importance", 
-                 learner = lrn("classif.svm", predict_type = "prob"))
-filter_svm$calculate(tsk1)
-importance_svm = as.data.table(filter_svm, keep.rownames = TRUE)[1:10]
-colnames(importance_svm) = c("Feature", "Importance")
-
-pdf('svm_feature-importance.pdf',width = 4,height = 4)
-ggplot(data=importance_svm,
-       aes(x = reorder(Feature, Importance), y = Importance)) +
-  geom_col() + coord_flip() + xlab("") + 
-  ggtitle("svm Feature") + 
-  theme(plot.title = element_text(hjust = 0.5)) 
-importance_svm
 dev.off()
 
