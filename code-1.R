@@ -18,9 +18,9 @@ lgr::get_logger("mlr3")$set_threshold("warn")
 lgr::get_logger("bbotk")$set_threshold("warn")
 
 data <- read.table("file.txt", sep = '\t',
-                   header = TRUE, stringsAsFactors = FALSE)
-data <- data[, -1]
-head(data)
+                   header = TRUE, stringsAsFactors = FALSE,
+                   na.strings = "",fill = TRUE) %>%
+  select(-gene)
 data$response <- factor(data$response, levels = c("1","0"),
                         labels = c("Good", "Bad"))
 data[is.na(data)] = 0
